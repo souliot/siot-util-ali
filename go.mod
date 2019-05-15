@@ -7,6 +7,4 @@ replace (
 	golang.org/x/net v0.0.0-20181114220301-adae6a3d119a => github.com/golang/net v0.0.0-20181114220301-adae6a3d119a
 )
 
-require (
-	
-)
+require github.com/souliot/siot-util v0.0.0-20190515105745-47d824d5e9fd
