@@ -13,8 +13,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/astaxie/beego"
 )
 
 var (
@@ -99,7 +97,7 @@ func (c *Client) GetResponse() (res Response, err error) {
 	if err != nil {
 		return
 	}
-	beego.Info(string(body))
+	// beego.Info(string(body))
 
 	err = json.Unmarshal(body, &res)
 	return
