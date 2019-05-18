@@ -21,17 +21,19 @@ var (
 	Endpoint   string = "iot.cn-shanghai.aliyuncs.com"
 )
 
-type Response struct {
-	RequestId string      `json:"RequestId"`
-	Success   bool        `json:"Success"`
-	Message   string      `json:"Message"`
-	Code      string      `json:"Code"`
-	PageCount int         `json:"PageCount"`
-	PageSize  int         `json:"PageSize"`
-	Page      int         `json:"Page"`
-	Total     int         `json:"Total"`
-	Data      interface{} `json:"Data"`
-}
+type Response map[string]interface{}
+
+// type Response struct {
+// 	RequestId string      `json:"RequestId"`
+// 	Success   bool        `json:"Success"`
+// 	Message   string      `json:"Message"`
+// 	Code      string      `json:"Code"`
+// 	PageCount int         `json:"PageCount"`
+// 	PageSize  int         `json:"PageSize"`
+// 	Page      int         `json:"Page"`
+// 	Total     int         `json:"Total"`
+// 	Data      interface{} `json:"Data"`
+// }
 
 type Client struct {
 	Endpoint        string
@@ -58,12 +60,8 @@ func NewClient(AccessKeyId string, AccessKeySecret string) (c *Client) {
 	return c
 }
 
-func (c *Client) SetFormat(format string) {
-	c.Params.Set("Format", format)
-}
-
-func (c *Client) SetVersion(format string) {
-	c.Params.Set("Format", format)
+func (c *Client) SetVersion(Version string) {
+	c.Params.Set("Version", Version)
 }
 
 func (c *Client) GetRequest() {

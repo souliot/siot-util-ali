@@ -1,10 +1,5 @@
 package iot
 
-type Product struct {
-}
-type ProductTag struct {
-}
-
 // Product
 func (c *Client) CreateProduct() (res Response, err error) {
 	return
