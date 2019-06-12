@@ -64,6 +64,7 @@ func (c *Client) SetVersion(Version string) {
 
 func (c *Client) InitBaseParams() {
 	c.Params = url.Values{}
+	beego.Info("*******************************重置参数**************************")
 	c.Params.Set("Format", "JSON")
 	c.Params.Set("Version", "2018-01-20")
 	c.Params.Set("SignatureMethod", "HMAC-SHA1")
