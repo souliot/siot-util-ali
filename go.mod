@@ -9,6 +9,5 @@ replace (
 
 require (
 	github.com/astaxie/beego v1.11.1
-	github.com/satori/go.uuid v1.2.0
 	github.com/souliot/siot-util v0.0.0-20190518164625-302008e3c0bc
 )

@@ -118,7 +118,7 @@ func (c *Client) GenerateSignString() string {
 func (c *Client) Signature() {
 	c.Params.Del("Signature")
 	c.Params.Set("Timestamp", time.Now().UTC().Format("2006-01-02T15:04:05Z"))
-	u2 := uuid.NewV4()
+	u2, _ := uuid.NewV4()
 	u := u2.String()
 	c.Params.Set("SignatureNonce", u)
 	key := c.AccessKeySecret + "&"
