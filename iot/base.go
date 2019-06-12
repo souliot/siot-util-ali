@@ -14,6 +14,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/astaxie/beego"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -93,6 +94,7 @@ func (c *Client) GetResponse() (res Response, err error) {
 	res = Response{}
 	c.Signature()
 	c.Request.URL.RawQuery = c.Params.Encode()
+	beego.Info(c.Params.Encode())
 	client := &http.Client{}
 	resp, err := client.Do(c.Request)
 	c.InitBaseParams()
