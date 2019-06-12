@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -42,13 +43,16 @@ type Client struct {
 	AccessKeySecret string
 	Params          url.Values
 	Request         *http.Request
+	Mutex           sync.Mutex
 }
 
 func NewClient(AccessKeyId string, AccessKeySecret string) (c *Client) {
 	c = &Client{}
+	var mutex sync.Mutex
 	c.Endpoint = Endpoint
 	c.AccessKeyId = AccessKeyId
 	c.AccessKeySecret = AccessKeySecret
+	c.Mutex = mutex
 	c.InitBaseParams()
 	return c
 }
@@ -84,12 +88,14 @@ func (c *Client) GetRequest() {
 }
 
 func (c *Client) GetResponse() (res Response, err error) {
+	c.Mutex.Lock()
 	c.GetRequest()
 	res = Response{}
 	c.Signature()
 	c.Request.URL.RawQuery = c.Params.Encode()
 	client := &http.Client{}
 	resp, err := client.Do(c.Request)
+	c.Mutex.Unlock()
 
 	if err != nil {
 		return
@@ -123,7 +129,7 @@ func (c *Client) GenerateSignString() string {
 func (c *Client) Signature() {
 
 	c.Params.Set("Timestamp", time.Now().UTC().Format("2006-01-02T15:04:05Z"))
-	u2, _ := uuid.NewV4()
+	u2 := uuid.NewV4()
 	u := u2.String()
 	c.Params.Set("SignatureNonce", u)
 	key := c.AccessKeySecret + "&"
