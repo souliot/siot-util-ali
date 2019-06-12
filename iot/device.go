@@ -48,3 +48,39 @@ func (c *Client) QueryDevicePropertyData(IotId string, Identifier string, StartT
 	res, err = c.GetResponse()
 	return
 }
+
+func (c *Client) QueryDeviceByTags(PageSize int, CurrentPage int, Tag map[string]string) (res Response, err error) {
+	c.Params.Set("Action", "QueryDeviceByTags")
+	c.Params.Set("PageSize", strconv.Itoa(PageSize))
+	c.Params.Set("CurrentPage", strconv.Itoa(CurrentPage))
+
+	for k, v := range Tag {
+		i := 0
+		c.Params.Set("Tag."+strconv.Itoa(i+1)+".TagKey", k)
+		c.Params.Set("Tag."+strconv.Itoa(i+1)+".TagValue", v)
+		i++
+	}
+	res, err = c.GetResponse()
+	return
+}
+
+func (c *Client) SaveDeviceProp(ProductKey string, DeviceName string, Props string) (res Response, err error) {
+	c.Params.Set("Action", "SaveDeviceProp")
+	c.Params.Set("ProductKey", ProductKey)
+	c.Params.Set("DeviceName", DeviceName)
+	c.Params.Set("Props", Props)
+
+	res, err = c.GetResponse()
+	return
+}
+
+func (c *Client) BatchUpdateDeviceNickname(DeviceNicknameInfos []map[string]string) (res Response, err error) {
+	c.Params.Set("Action", "BatchUpdateDeviceNickname")
+	for i, DeviceNicknameInfo := range DeviceNicknameInfos {
+		c.Params.Set("DeviceNicknameInfo."+strconv.Itoa(i+1)+".ProductKey", DeviceNicknameInfo["ProductKey"])
+		c.Params.Set("DeviceNicknameInfo."+strconv.Itoa(i+1)+".DeviceName", DeviceNicknameInfo["DeviceName"])
+		c.Params.Set("DeviceNicknameInfo."+strconv.Itoa(i+1)+".Nickname", DeviceNicknameInfo["Nickname"])
+	}
+	res, err = c.GetResponse()
+	return
+}
