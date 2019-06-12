@@ -50,19 +50,20 @@ func NewClient(AccessKeyId string, AccessKeySecret string) (c *Client) {
 	c.AccessKeyId = AccessKeyId
 	c.AccessKeySecret = AccessKeySecret
 	c.Params = url.Values{}
-	c.Params.Set("Format", "JSON")
-	c.Params.Set("Version", "2018-01-20")
-	c.Params.Set("SignatureMethod", "HMAC-SHA1")
-	c.Params.Set("SignatureVersion", "1.0")
-	c.Params.Set("RegionId", "cn-shanghai")
-	c.Params.Set("AccessKeyId", AccessKeyId)
-
-	c.GetRequest()
 	return c
 }
 
 func (c *Client) SetVersion(Version string) {
 	c.Params.Set("Version", Version)
+}
+
+func (c *Client) InitBaseParams() {
+	c.Params.Set("Format", "JSON")
+	c.Params.Set("Version", "2018-01-20")
+	c.Params.Set("SignatureMethod", "HMAC-SHA1")
+	c.Params.Set("SignatureVersion", "1.0")
+	c.Params.Set("RegionId", "cn-shanghai")
+	c.Params.Set("AccessKeyId", c.AccessKeyId)
 }
 
 func (c *Client) GetRequest() {
@@ -82,11 +83,14 @@ func (c *Client) GetRequest() {
 }
 
 func (c *Client) GetResponse() (res Response, err error) {
+	c.GetRequest()
 	res = Response{}
 	c.Signature()
 	c.Request.URL.RawQuery = c.Params.Encode()
 	client := &http.Client{}
 	resp, err := client.Do(c.Request)
+	c.Params = url.Values{}
+
 	if err != nil {
 		return
 	}
@@ -116,7 +120,7 @@ func (c *Client) GenerateSignString() string {
 }
 
 func (c *Client) Signature() {
-	c.Params.Del("Signature")
+	c.InitBaseParams()
 	c.Params.Set("Timestamp", time.Now().UTC().Format("2006-01-02T15:04:05Z"))
 	u2, _ := uuid.NewV4()
 	u := u2.String()
