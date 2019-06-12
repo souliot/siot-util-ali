@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -20,6 +21,7 @@ var (
 	HTTPMethod string = "GET"
 	SEPARATOR  string = "&"
 	Endpoint   string = "iot.cn-shanghai.aliyuncs.com"
+	Mutex      sync.Mutex
 )
 
 type Response map[string]interface{}
@@ -83,6 +85,7 @@ func (c *Client) GetRequest() {
 }
 
 func (c *Client) GetResponse() (res Response, err error) {
+	Mutex.Lock()
 	c.GetRequest()
 	res = Response{}
 	c.Signature()
@@ -102,6 +105,7 @@ func (c *Client) GetResponse() (res Response, err error) {
 	// beego.Info(string(body))
 
 	err = json.Unmarshal(body, &res)
+	Mutex.Unlock()
 	return
 }
 
