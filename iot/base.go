@@ -89,6 +89,7 @@ func (c *Client) GetRequest() {
 }
 
 func (c *Client) GetResponse() (res Response, err error) {
+	defer c.InitBaseParams()
 	c.Mutex.Lock()
 	c.GetRequest()
 	res = Response{}
@@ -97,9 +98,6 @@ func (c *Client) GetResponse() (res Response, err error) {
 	beego.Info(c.Params.Encode())
 	client := &http.Client{}
 	resp, err := client.Do(c.Request)
-	c.InitBaseParams()
-	c.Mutex.Unlock()
-
 	if err != nil {
 		return
 	}
@@ -112,6 +110,7 @@ func (c *Client) GetResponse() (res Response, err error) {
 	// beego.Info(string(body))
 
 	err = json.Unmarshal(body, &res)
+	c.Mutex.Unlock()
 	return
 }
 
