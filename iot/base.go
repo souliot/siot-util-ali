@@ -95,13 +95,13 @@ func (c *Client) GetResponse() (res Response, err error) {
 	c.Request.URL.RawQuery = c.Params.Encode()
 	client := &http.Client{}
 	resp, err := client.Do(c.Request)
+	c.InitBaseParams()
 	c.Mutex.Unlock()
 
 	if err != nil {
 		return
 	}
 	defer resp.Body.Close()
-	c.InitBaseParams()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -127,7 +127,6 @@ func (c *Client) GenerateSignString() string {
 }
 
 func (c *Client) Signature() {
-
 	c.Params.Set("Timestamp", time.Now().UTC().Format("2006-01-02T15:04:05Z"))
 	u2 := uuid.NewV4()
 	u := u2.String()
