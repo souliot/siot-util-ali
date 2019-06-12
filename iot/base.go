@@ -49,7 +49,7 @@ func NewClient(AccessKeyId string, AccessKeySecret string) (c *Client) {
 	c.Endpoint = Endpoint
 	c.AccessKeyId = AccessKeyId
 	c.AccessKeySecret = AccessKeySecret
-	c.Params = url.Values{}
+	c.InitBaseParams()
 	return c
 }
 
@@ -58,6 +58,7 @@ func (c *Client) SetVersion(Version string) {
 }
 
 func (c *Client) InitBaseParams() {
+	c.Params = url.Values{}
 	c.Params.Set("Format", "JSON")
 	c.Params.Set("Version", "2018-01-20")
 	c.Params.Set("SignatureMethod", "HMAC-SHA1")
@@ -89,12 +90,12 @@ func (c *Client) GetResponse() (res Response, err error) {
 	c.Request.URL.RawQuery = c.Params.Encode()
 	client := &http.Client{}
 	resp, err := client.Do(c.Request)
-	c.Params = url.Values{}
 
 	if err != nil {
 		return
 	}
 	defer resp.Body.Close()
+	c.InitBaseParams()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -120,7 +121,7 @@ func (c *Client) GenerateSignString() string {
 }
 
 func (c *Client) Signature() {
-	c.InitBaseParams()
+
 	c.Params.Set("Timestamp", time.Now().UTC().Format("2006-01-02T15:04:05Z"))
 	u2, _ := uuid.NewV4()
 	u := u2.String()
