@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/astaxie/beego"
@@ -44,17 +43,13 @@ type Client struct {
 	AccessKeySecret string
 	Params          url.Values
 	Request         *http.Request
-	Mutex           sync.Mutex
 }
 
 func NewClient(AccessKeyId string, AccessKeySecret string) (c *Client) {
 	c = &Client{}
-	var mutex sync.Mutex
 	c.Endpoint = Endpoint
 	c.AccessKeyId = AccessKeyId
 	c.AccessKeySecret = AccessKeySecret
-	c.Mutex = mutex
-	c.InitBaseParams()
 	return c
 }
 
@@ -64,7 +59,6 @@ func (c *Client) SetVersion(Version string) {
 
 func (c *Client) InitBaseParams() {
 	c.Params = url.Values{}
-	beego.Info("*******************************重置参数**************************")
 	c.Params.Set("Format", "JSON")
 	c.Params.Set("Version", "2018-01-20")
 	c.Params.Set("SignatureMethod", "HMAC-SHA1")
@@ -90,8 +84,6 @@ func (c *Client) GetRequest() {
 }
 
 func (c *Client) GetResponse() (res Response, err error) {
-	defer c.InitBaseParams()
-	c.Mutex.Lock()
 	c.GetRequest()
 	res = Response{}
 	c.Signature()
@@ -111,7 +103,6 @@ func (c *Client) GetResponse() (res Response, err error) {
 	// beego.Info(string(body))
 
 	err = json.Unmarshal(body, &res)
-	c.Mutex.Unlock()
 	return
 }
 

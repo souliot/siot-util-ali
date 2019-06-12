@@ -4,6 +4,7 @@ import "strconv"
 
 // Device
 func (c *Client) QueryDevice(ProductKey string) (res Response, err error) {
+	c.InitBaseParams()
 	c.Params.Set("Action", "QueryDevice")
 	c.Params.Set("ProductKey	", ProductKey)
 	c.Params.Set("CurrentPage", "1")
@@ -13,6 +14,7 @@ func (c *Client) QueryDevice(ProductKey string) (res Response, err error) {
 }
 
 func (c *Client) QueryDeviceDetail(IotId string) (res Response, err error) {
+	c.InitBaseParams()
 	c.Params.Set("Action", "QueryDeviceDetail")
 	c.Params.Set("IotId	", IotId)
 	res, err = c.GetResponse()
@@ -20,6 +22,7 @@ func (c *Client) QueryDeviceDetail(IotId string) (res Response, err error) {
 }
 
 func (c *Client) QueryDeviceProp(IotId string) (res Response, err error) {
+	c.InitBaseParams()
 	c.Params.Set("Action", "QueryDeviceProp")
 	c.Params.Set("IotId	", IotId)
 	res, err = c.GetResponse()
@@ -27,6 +30,7 @@ func (c *Client) QueryDeviceProp(IotId string) (res Response, err error) {
 }
 
 func (c *Client) QueryDevicePropertyStatus(IotId string) (res Response, err error) {
+	c.InitBaseParams()
 	c.Params.Set("Action", "QueryDevicePropertyStatus")
 	c.Params.Set("IotId	", IotId)
 	res, err = c.GetResponse()
@@ -38,6 +42,7 @@ func (c *Client) QueryDevicePropertyStatus(IotId string) (res Response, err erro
 // PageSize 返回结果中每页显示的记录数。数量限制：每页最多可显示50条。
 // Asc 返回结果中属性记录的排序方式，取值：0：倒序；1：正序。
 func (c *Client) QueryDevicePropertyData(IotId string, Identifier string, StartTime int64, EndTime int64, PageSize int, Asc int) (res Response, err error) {
+	c.InitBaseParams()
 	c.Params.Set("Action", "QueryDevicePropertyData")
 	c.Params.Set("IotId", IotId)
 	c.Params.Set("Identifier", Identifier)
@@ -50,6 +55,7 @@ func (c *Client) QueryDevicePropertyData(IotId string, Identifier string, StartT
 }
 
 func (c *Client) QueryDeviceByTags(PageSize int, CurrentPage int, Tag map[string]string) (res Response, err error) {
+	c.InitBaseParams()
 	c.Params.Set("Action", "QueryDeviceByTags")
 	c.Params.Set("PageSize", strconv.Itoa(PageSize))
 	c.Params.Set("CurrentPage", strconv.Itoa(CurrentPage))
@@ -65,6 +71,7 @@ func (c *Client) QueryDeviceByTags(PageSize int, CurrentPage int, Tag map[string
 }
 
 func (c *Client) SaveDeviceProp(ProductKey string, DeviceName string, Props string) (res Response, err error) {
+	c.InitBaseParams()
 	c.Params.Set("Action", "SaveDeviceProp")
 	c.Params.Set("ProductKey", ProductKey)
 	c.Params.Set("DeviceName", DeviceName)
@@ -75,6 +82,7 @@ func (c *Client) SaveDeviceProp(ProductKey string, DeviceName string, Props stri
 }
 
 func (c *Client) BatchUpdateDeviceNickname(DeviceNicknameInfos []map[string]string) (res Response, err error) {
+	c.InitBaseParams()
 	c.Params.Set("Action", "BatchUpdateDeviceNickname")
 	for i, DeviceNicknameInfo := range DeviceNicknameInfos {
 		c.Params.Set("DeviceNicknameInfo."+strconv.Itoa(i+1)+".ProductKey", DeviceNicknameInfo["ProductKey"])
