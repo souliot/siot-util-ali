@@ -10,9 +10,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 var (
@@ -117,12 +118,15 @@ func (c *Client) GenerateSignString() string {
 func (c *Client) Signature() {
 	c.Params.Del("Signature")
 	c.Params.Set("Timestamp", time.Now().UTC().Format("2006-01-02T15:04:05Z"))
-	c.Params.Set("SignatureNonce", strconv.Itoa(int(time.Now().Unix())))
+	u2 := uuid.NewV4()
+	u := u2.String()
+	c.Params.Set("SignatureNonce", u)
 	key := c.AccessKeySecret + "&"
 	h := hmac.New(sha1.New, []byte(key))
 	io.WriteString(h, c.GenerateSignString())
 
 	signature := string(base64Encode(h.Sum(nil)))
+	// beego.Info(signature)
 	c.Params.Set("Signature", signature)
 }
 
